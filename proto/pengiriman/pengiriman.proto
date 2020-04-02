@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package pengiriman;
+
+service PengirimanService {
+    rpc CreatePengiriman (Pengiriman) returns (Response){}
+}
+
+message Pengiriman {
+    string UUID = 1;
+    string desc = 2;
+    int32 weigth = 3;
+    repeated Container containers =4;
+    string driver_id = 5;
+}
+
+message Container {
+    string id = 1;
+    string pelanggan_id = 2;
+    string alamat = 3;
+    string user_id = 4;
+
+}
+
+message Response {
+    bool created = 1;
+    Pengiriman pengiriman = 2;
+}
