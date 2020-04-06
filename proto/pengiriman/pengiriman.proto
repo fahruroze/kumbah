@@ -3,7 +3,13 @@ syntax = "proto3";
 package pengiriman;
 
 service PengirimanService {
+    //mendaftarkan method CreatePengiriman untuk MEMBUAT PENGIRIMAN
     rpc CreatePengiriman (Pengiriman) returns (Response){}
+
+    //mendaftarkan method GetPengiriman untuk melihat pengiriman
+
+    rpc GetPengiriman2(GetRequest) returns (Response) {}
+
 }
 
 message Pengiriman {
@@ -22,7 +28,21 @@ message Container {
 
 }
 
+
+//buat model kosong sebagi penampung
+// dataRequest yg didaftarkan pada method grpc
+message GetRequest {}
+
 message Response {
     bool created = 1;
     Pengiriman pengiriman = 2;
+
+    //tambahkan slice/array untuk menampung bermacam-macam pengiriman
+    repeated Pengiriman pengiriman2 = 3;
 }
+
+
+
+
+
+

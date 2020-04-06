@@ -8,8 +8,9 @@ import (
 
 	pb "github.com/fahruroze/kumbah/proto/pengiriman"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
+
+//inisial port yang digunakan
 
 const (
 	port = ":50051"
@@ -17,8 +18,10 @@ const (
 
 type repository interface {
 	Create(*pb.Pengiriman) (*pb.Pengiriman, error)
+	GetAll() []*pb.Pengiriman
 }
 
+// Repo sementara, untuk mencoba menggunakan data dumy
 type Repository struct {
 	mu          sync.RWMutex
 	pengiriman2 []*pb.Pengiriman
@@ -32,6 +35,10 @@ func (repo *Repository) Create(pengiriman *pb.Pengiriman) (*pb.Pengiriman, error
 	repo.pengiriman2 = updated
 	repo.mu.Unlock()
 	return pengiriman, nil
+}
+
+func (repo *Repository) GetAll() []*pb.Pengiriman {
+	return repo.pengiriman2
 }
 
 //Service harus mengimplementasikan semua
@@ -54,6 +61,11 @@ func (s *service) CreatePengiriman(ctx context.Context, req *pb.Pengiriman) (*pb
 	return &pb.Response{Created: true, Pengiriman: pengiriman}, nil
 }
 
+func (s *service) GetPengiriman2(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
+	pengiriman2 := s.repo.GetAll()
+	return &pb.Response{Pengiriman2: pengiriman2}, nil
+}
+
 func main() {
 	repo := &Repository{}
 
@@ -68,7 +80,7 @@ func main() {
 	pb.RegisterPengirimanServiceServer(s, &service{repo})
 
 	//daftarkan reflection service di gRPC juga
-	reflection.Register(s)
+	// reflection.Register(s)
 
 	//Jalankan port
 	log.Println("Running on port:", port)
